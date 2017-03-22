@@ -11,7 +11,7 @@ This demo project shows how to weave aspects into JDK/JRE classes with a Maven b
    not enough!), either by replacing the original boot classpath altogether with `-Xbootclasspath:<path>`
    or by just prepending the two JARs to the usual boot classpath with `-Xbootclasspath/p:<path>`.
 
-What you can doto the JRE/JDK with AspectJ basically encompasses the full feature set. In some cases you
+What you can do to the JRE/JDK with AspectJ basically encompasses the full feature set. In some cases you
 just need to be careful not to create bootstrapping or recursion problems in situations when aspects use JRE
 code which in turn triggers aspect code etc.
 
@@ -44,3 +44,16 @@ If you want to learn how to use this approach for your own purposes, you may wan
   was indeed successful
 * [Sample application](application/src/main/java/de/scrum_master/app/Application.java): uses method
   `String.repeat(int)` introduced by aspect.
+
+## Possible improvements
+
+Instead of zipping up all class files into a woven _rt.jar_ version, it would be better and more efficient
+to just package the JRE files which have actually been modified by the AspectJ compiler. Unfortunately there
+is no compiler option to avoid writing unchanged binaries to the target directory. Andy Clement, if you are
+reading this, please consider adding this feature for an upcoming AspectJ release. Because if we had that
+feature, we could just create small JARs containing modified class files + aspects and **prepend** them to
+the boot classpath. This is like the normal JRE wearing glasses: Changed class files would be found in the
+small JAR, original JRE files would be found in the original _rt.jar_. Of course, you can do this manually
+by looking at the weave info on the console during the build and then zip up just the minimal number of
+class files into the woven _rt.jar_ version. I have tried and it works beautifully. I just have not found an
+elegant way of automating this in a Maven build via resource filtering or whatever.
