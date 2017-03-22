@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>de.scrum-master.aspectj</groupId>
+    <artifactId>aspectj-jdk-weaver</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>jdk-weaver</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>aspectj-maven-plugin</artifactId>
+        <configuration>
+          <weaveDependencies>
+            <!-- Weave aspects into the JRE's rt.jar, create a new JAR replacing it -->
+            <weaveDependency>
+              <groupId>java</groupId>
+              <artifactId>jre-runtime</artifactId>
+            </weaveDependency>
+          </weaveDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>java</groupId>
+      <artifactId>jre-runtime</artifactId>
+      <version>1.8</version>
+      <scope>system</scope>
+      <!-- Please adjust this path if it is different on your system -->
+      <systemPath>${java.home}/lib/rt.jar</systemPath>
+    </dependency>
+  </dependencies>
+
+</project>

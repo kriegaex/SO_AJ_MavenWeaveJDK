@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>de.scrum-master.aspectj</groupId>
+    <artifactId>aspectj-jdk-weaver</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>application</artifactId>
+
+  <properties>
+    <!-- Woven rt.jar + AspectJ runtime must be on boot classpath in order to be found by JVM -->
+    <bootclasspath.woven-jdk>
+      ${de.scrum-master.aspectj:jdk-weaver:jar};${org.aspectj:aspectjrt:jar}
+    </bootclasspath.woven-jdk>
+
+    <!-- Set boot classpath for Maven Surefire + Failsafe -->
+    <argLine>-Xbootclasspath/p:${bootclasspath.woven-jdk}</argLine>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArguments>
+            <!-- Set boot classpath for Maven Compiler -->
+            <bootclasspath>${bootclasspath.woven-jdk}</bootclasspath>
+          </compilerArguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <configuration>
+          <executable>java</executable>
+          <arguments>
+            <argument>-Xbootclasspath/p:${de.scrum-master.aspectj:jdk-weaver:jar};${org.aspectj:aspectjrt:jar}</argument>
+            <argument>-classpath</argument>
+            <!-- automatically creates the classpath using all project dependencies,
+                 also adding the project build directory -->
+            <classpath/>
+            <argument>de.scrum_master.app.Application</argument>
+          </arguments>
+        </configuration>
+        <executions>
+          <execution>
+            <id>run-application</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>de.scrum-master.aspectj</groupId>
+      <artifactId>jdk-weaver</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+</project>
